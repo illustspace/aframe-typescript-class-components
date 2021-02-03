@@ -3,7 +3,7 @@
 A simple tool for writing [Aframe](https://aframe.io/docs) components as TypeScript classes.
 
 [![npm package](https://img.shields.io/npm/v/aframe-typescript-class-components.svg)](https://www.npmjs.com/package/aframe-typescript-class-components)
-[![codecov](https://codecov.io/gh/will-wow/aframe-typescript-class-components/branch/master/graph/badge.svg)](https://codecov.io/gh/will-wow/aframe-typescript-class-components)
+[![codecov](https://codecov.io/gh/will-wow/aframe-typescript-class-components/branch/main/graph/badge.svg)](https://codecov.io/gh/will-wow/aframe-typescript-class-components)
 [![David Dependency Status](https://david-dm.org/will-wow/aframe-typescript-class-components.svg)](https://david-dm.org/will-wow/aframe-typescript-class-components)
 
 I love the simplicity of Aframe, but I hate looking at docs. TypeScript is great for its development experience, giving you type hints for what methods are available in a class. And Aframe components look _a lot_ like classes. But they're a little magical - data like `this.el` and `this.data` are injected into your components by Aframe at runtime, and there's not a good way to tell TypeScript about them.
