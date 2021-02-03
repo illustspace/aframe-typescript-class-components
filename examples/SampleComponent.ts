@@ -12,7 +12,7 @@ export class SampleComponent extends BaseComponent<SampleComponentData> {
   someProperty = true;
   someObject: Record<string, string> = {};
 
-  getSomeProperty() {
+  getSomeProperty(): boolean {
     return this.someProperty;
   }
 }
