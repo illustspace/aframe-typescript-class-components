@@ -1,6 +1,6 @@
 import { SampleComponent } from "../examples/SampleComponent";
 
-import { toComponent } from ".";
+import { toComponent } from "./aframe-typescript-class-components";
 
 const initialData = {
   enabled: true,

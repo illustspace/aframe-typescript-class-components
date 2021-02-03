@@ -1,9 +1,9 @@
-import typescript from "@rollup/plugin-typescript";
+import typescript from "rollup-plugin-typescript2";
 
 import pkg from "./package.json";
 
 export default {
-  input: "src/index.ts",
+  input: "src/aframe-typescript-class-components.ts",
   output: [
     {
       file: pkg.main,
@@ -21,7 +21,8 @@ export default {
   plugins: [
     typescript({
       exclude: ["**/*.test.ts", "examples"],
-      tsconfig: "./tsconfig.json",
+      useTsconfigDeclarationDir: false,
+      clean: true,
     }),
   ],
 };

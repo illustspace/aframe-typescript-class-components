@@ -1,4 +1,4 @@
-import { BaseComponent } from "../src/.";
+import { BaseComponent } from "../src/aframe-typescript-class-components";
 
 export interface SampleComponentData {
   enabled: boolean;
