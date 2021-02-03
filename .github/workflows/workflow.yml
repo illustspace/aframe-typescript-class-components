@@ -6,6 +6,7 @@ name: deploy-to-npm
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: main
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
@@ -18,3 +19,7 @@ jobs:
         with:
           directory: ./coverage
           fail_ci_if_error: true
+      - name: NPM Publish
+        uses: JS-DevTools/npm-publish@v1
+        with:
+          token: ${{ secrets.NPM_TOKEN }}
