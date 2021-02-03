@@ -13,15 +13,14 @@
     "prepublishOnly": "npm-run-all lint test build",
     "lint": "npm-run-all lint:*",
     "lint:eslint": "eslint './**/*.{ts,js}'",
-    "lint:prettier": "prettier --check './**/*.{ts,tsx,html,md,json}'",
+    "lint:prettier": "prettier --check './**/*.{ts,html,md,json}'",
     "format": "npm-run-all format:*",
     "format:eslint": "eslint --fix './**/*.{ts,js}'",
-    "format:prettier": "prettier --write './**/*.{ts,tsx,html,md,json}'"
+    "format:prettier": "prettier --write './**/*.{ts,html,md,json}'"
   },
   "dependencies": {},
   "devDependencies": {
     "@types/aframe": "^1.0.3",
-    "@types/jest": "^26.0.20",
     "@types/three": "^0.103.2",
     "@typescript-eslint/eslint-plugin": "^4.10.0",
     "@typescript-eslint/parser": "^4.10.0",

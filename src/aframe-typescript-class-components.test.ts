@@ -1,3 +1,4 @@
+import { Schema } from "aframe";
 import { SampleComponent } from "../examples/SampleComponent";
 
 import {
@@ -9,13 +10,17 @@ export class EmptyComponent extends BaseComponent {
   someProperty = true;
 }
 
+type AframeComponent<C> = C & { schema: Schema };
+
 describe("BaseComponent", () => {
   describe("toComponent", () => {
-    let component: EmptyComponent;
+    let component: AframeComponent<EmptyComponent>;
 
     describe("given a Component with no init method", () => {
       beforeEach(() => {
-        component = toComponent(EmptyComponent) as EmptyComponent;
+        component = toComponent(
+          EmptyComponent
+        ) as AframeComponent<EmptyComponent>;
       });
 
       it("runs the constructor during init", () => {
@@ -28,10 +33,18 @@ describe("BaseComponent", () => {
     });
 
     describe("given the SampleComponent", () => {
-      let component: SampleComponent;
+      let component: AframeComponent<SampleComponent>;
 
       beforeEach(() => {
-        component = toComponent(SampleComponent) as SampleComponent;
+        component = toComponent(
+          SampleComponent
+        ) as AframeComponent<SampleComponent>;
+      });
+
+      it("has a schema before init", () => {
+        expect(component.schema).toEqual({
+          enabled: { type: "boolean", default: true },
+        });
       });
 
       it("runs the constructor during init", () => {
@@ -52,11 +65,18 @@ describe("BaseComponent", () => {
 
       describe("given the component is initialized", () => {
         beforeEach(() => {
-          component = toComponent(SampleComponent) as SampleComponent;
           component.init();
         });
 
-        it("has methods", () => {
+        it("does not add built-in methods (aframe will handle that)", () => {
+          expect(() => component.update({ enabled: true })).toThrow(TypeError);
+        });
+
+        it("has defined built-in methods", () => {
+          expect(() => component.tick(1, 1)).not.toThrow();
+        });
+
+        it("has custom methods", () => {
           expect(component.getSomeProperty()).toBe(true);
         });
 

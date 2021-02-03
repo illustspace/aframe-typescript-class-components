@@ -1,12 +1,15 @@
-import { BaseComponent } from "../src/aframe-typescript-class-components";
+import {
+  BaseComponent,
+  toComponent,
+} from "../src/aframe-typescript-class-components";
 
 export interface SampleComponentData {
-  enabled: string;
+  enabled: boolean;
 }
 
 export class SampleComponent extends BaseComponent<SampleComponentData> {
   static schema = {
-    enabled: { type: "boolean", default: true },
+    enabled: { type: "boolean" as const, default: true },
   };
 
   someProperty = true;
@@ -17,7 +20,13 @@ export class SampleComponent extends BaseComponent<SampleComponentData> {
     this.initialized = true;
   }
 
+  tick(_time: number, _deltaTime: number): void {
+    // do something on tick.
+  }
+
   getSomeProperty(): boolean {
     return this.someProperty;
   }
 }
+
+AFRAME.registerComponent("sample", toComponent(SampleComponent));

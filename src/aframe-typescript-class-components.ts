@@ -5,10 +5,9 @@ import { Camera } from "three";
 
 /** A fake base Aframe component class that defines the methods Aframe will inject into the component at runtime. */
 declare class AbstractBaseComponent<D extends object = any> {
-  el: Entity;
+  static schema: Schema;
 
-  schema: Schema<D>;
-  /** Re-define the default schema values and types here. */
+  el: Entity;
   data: D;
   dependencies?: string[];
   name: string;
@@ -18,23 +17,23 @@ declare class AbstractBaseComponent<D extends object = any> {
   pause(): void;
   play(): void;
   remove(): void;
-  tick?(_time: number, _timeDelta: number): void;
-  tock?(_time: number, _timeDelta: number, _camera: Camera): void;
-  update(_oldData: D): void;
+  tick?(time: number, timeDelta: number): void;
+  tock?(time: number, timeDelta: number, camera: Camera): void;
+  update(oldData: D): void;
   updateSchema?(): void;
 
-  extendSchema(_update: Schema): void;
+  extendSchema(update: Schema): void;
   flushToDOM(): void;
 }
 
-type ComponentMethods<T> = Record<keyof T, any>;
-type ComponentValues<T> = Record<keyof T, any>;
+type ComponentObject<T> = Record<keyof T, any> & { schema: Schema };
 
 /** A class that describes the methods Aframe will inject into the component at runtime. */
 export const BaseComponent = class EmptyComponent {} as typeof AbstractBaseComponent;
 
 interface GenericBaseComponent<D extends object> {
   new (): AbstractBaseComponent<D>;
+  schema: Schema<D>;
 }
 
 export const toComponent = <D extends object>(
@@ -45,18 +44,15 @@ export const toComponent = <D extends object>(
   >;
 
   /** The final component object. */
-  const component = {} as ComponentMethods<typeof prototype>;
+  const component = { schema: ComponentClass.schema } as ComponentObject<
+    typeof prototype
+  >;
 
-  /** Values to be initialized, from static properties. */
-  const initValues = {} as ComponentValues<typeof prototype>;
-
-  const methodKeys = Object.getOwnPropertyNames(
-    Object.getPrototypeOf(prototype)
-  ) as (keyof typeof prototype | "constructor")[];
-
-  const propertyKeys = Object.getOwnPropertyNames(
-    prototype
-  ) as (keyof typeof prototype)[];
+  /** Methods to copy over to the object. */
+  const methodKeys = Object.getOwnPropertyNames(prototype) as (
+    | keyof typeof prototype
+    | "constructor"
+  )[];
 
   // Move methods onto the component object.
   methodKeys.forEach((key) => {
@@ -65,18 +61,19 @@ export const toComponent = <D extends object>(
     }
   });
 
-  // Remember
-  propertyKeys.forEach((key) => {
-    initValues[key] = prototype[key];
-  });
-
+  /** A reference to the original init method, to be called after property initialization. */
   const onInit = prototype.init;
 
+  // Override the init method to make a new instance of the class, and pass the properties to the component.
   component.init = function (data: D) {
     const instance = new ComponentClass();
-    const initKeys = Object.keys(initValues) as (keyof typeof instance)[];
 
-    initKeys.forEach((key) => {
+    const propertyKeys = Object.getOwnPropertyNames(
+      instance
+    ) as (keyof typeof instance)[];
+
+    // Remember
+    propertyKeys.forEach((key) => {
       this[key] = instance[key];
     });
 
