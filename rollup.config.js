@@ -20,7 +20,7 @@ export default {
   ],
   plugins: [
     typescript({
-      exclude: ["**/*.test.ts", "examples"],
+      exclude: ["**/*.test.ts", "examples", "src/setupTests.ts"],
       useTsconfigDeclarationDir: false,
       clean: true,
     }),
