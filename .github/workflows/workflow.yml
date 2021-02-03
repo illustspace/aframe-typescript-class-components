@@ -1,0 +1,20 @@
+name: deploy-to-npm
+"on":
+  push:
+    branches:
+      - main
+jobs:
+  check-bats-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+      - run: yarn install --frozen-lockfile
+      - run: yarn lint
+      - run: yarn test --coverage
+      - run: yarn build
+      - name: Codecov
+        uses: codecov/codecov-action@v1.2.1
+        with:
+          directory: ./coverage
+          fail_ci_if_error: true
