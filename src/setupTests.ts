@@ -6,5 +6,3 @@ global.AFRAME = {
   registerComponent: (_name: string, _component: ComponentDefinition) =>
     ({} as ComponentConstructor<any>),
 } as any;
-
-export {};
