@@ -1,4 +1,5 @@
-import { Schema } from "aframe";
+import { Entity, Schema } from "aframe";
+import { Object3D, Vector3 } from "three";
 import { SampleComponent } from "../examples/SampleComponent";
 
 import {
@@ -39,6 +40,13 @@ describe("BaseComponent", () => {
         component = toComponent(
           SampleComponent
         ) as AframeComponent<SampleComponent>;
+
+        // Set the initial data state, since it's not initialized by Aframe in this test.
+        component.data = { enabled: false };
+
+        // Create a fake element with an Object3D.
+        component.el = document.createElement("a-entity");
+        component.el.object3D = new Object3D();
       });
 
       it("has a schema before init", () => {
@@ -48,11 +56,11 @@ describe("BaseComponent", () => {
       });
 
       it("runs the constructor during init", () => {
-        expect(component.someProperty).toBeFalsy();
+        expect(component.vector).toBeUndefined();
 
         component.init();
 
-        expect(component.someProperty).toBe(true);
+        expect(component.vector).toEqual(new Vector3(0, 0, 0));
       });
 
       it("runs the init function after construction", () => {
@@ -66,6 +74,10 @@ describe("BaseComponent", () => {
       describe("given the component is initialized", () => {
         beforeEach(() => {
           component.init();
+          component.el = {
+            object3D: new Object3D(),
+          } as Entity;
+          component.data = { enabled: true };
         });
 
         it("does not add built-in methods (aframe will handle that)", () => {
@@ -77,19 +89,23 @@ describe("BaseComponent", () => {
         });
 
         it("has custom methods", () => {
-          expect(component.getSomeProperty()).toBe(true);
+          expect(component.getVectorX()).toBe(0);
         });
 
         it("has isolated instance variables", () => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const component2 = toComponent(SampleComponent) as SampleComponent;
 
+          component2.data = { enabled: false };
+          component2.el = document.createElement("a-entity");
+          component2.el.object3D = new Object3D();
+
           component2.init();
 
-          component2.someObject.foo = "bar";
+          component2.vector.setX(1);
 
-          expect(component2.someObject.foo).toBe("bar");
-          expect(component.someObject.foo).toBeUndefined();
+          expect(component2.vector.x).toBe(1);
+          expect(component.vector.x).toBe(0);
         });
       });
     });

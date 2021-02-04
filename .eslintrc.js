@@ -15,7 +15,5 @@ module.exports = {
         argsIgnorePattern: "^rest|^_",
       },
     ],
-    "@typescript-eslint/no-empty-function": "off",
-    "@typescript-eslint/explicit-module-boundary-types": "off",
   },
 };

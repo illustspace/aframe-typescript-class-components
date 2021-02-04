@@ -86,7 +86,7 @@ export const toComponent = <
   });
 
   /** A reference to the original init method, to be called after property initialization. */
-  const onInit = prototype.init;
+  const onInit: (data: D) => void = prototype.init;
 
   // Override the init method to make a new instance of the class, and pass the properties to the component.
   component.init = function (data: D) {

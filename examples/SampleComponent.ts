@@ -1,3 +1,4 @@
+import { Vector3 } from "three";
 import {
   BaseComponent,
   toComponent,
@@ -13,28 +14,37 @@ export class SampleComponent extends BaseComponent<SampleComponentData> {
   };
   static multiple = true;
 
+  initialized = false;
+  vector = new Vector3(0, 0, 0);
+
   events = {
     click: (): void => {
+      // Move forward on click.
       const z = this.el.object3D.position.z;
       this.el.object3D.position.setZ(z - 1);
     },
   };
 
-  someProperty = true;
-  someObject: Record<string, string> = {};
-  initialized = false;
-
   init(): void {
     this.initialized = true;
+
+    this.el.sceneEl?.addEventListener("some-event", this.onSceneEvent);
   }
 
-  tick(_time: number, _deltaTime: number): void {
-    // do something on tick.
+  tick(time: number, deltaTime: number): void {
+    if (this.data.enabled) {
+      // Rotate 180 degrees every second.
+      this.el.object3D.rotateZ(Math.PI * (deltaTime / 1000));
+    }
   }
 
-  getSomeProperty(): boolean {
-    return this.someProperty;
+  getVectorX(): number {
+    return this.vector.x;
   }
+
+  onSceneEvent = (): void => {
+    this.vector.setX(this.vector.x + 1);
+  };
 }
 
 AFRAME.registerComponent("sample", toComponent(SampleComponent));
