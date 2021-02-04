@@ -33,6 +33,7 @@ export class SampleComponent extends BaseComponent<SampleComponentData> {
   static schema = {
     enabled: { type: "boolean" as const, default: true },
   };
+  static multiple = true;
 
   someProperty = true;
   someObject: Record<string, string> = {};
@@ -41,6 +42,13 @@ export class SampleComponent extends BaseComponent<SampleComponentData> {
   init(): void {
     this.initialized = true;
   }
+
+  events = {
+    click: (): void => {
+      const z = this.el.object3D.position.z;
+      this.el.object3D.position.setZ(z - 1);
+    },
+  };
 
   tick(time: number, deltaTime: number): void {
     // do something on tick.

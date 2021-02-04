@@ -11,6 +11,14 @@ export class SampleComponent extends BaseComponent<SampleComponentData> {
   static schema = {
     enabled: { type: "boolean" as const, default: true },
   };
+  static multiple = true;
+
+  events = {
+    click: (): void => {
+      const z = this.el.object3D.position.z;
+      this.el.object3D.position.setZ(z - 1);
+    },
+  };
 
   someProperty = true;
   someObject: Record<string, string> = {};
