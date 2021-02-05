@@ -1,7 +1,7 @@
 module.exports = {
   preset: "ts-jest",
   testEnvironment: "jsdom",
-  setupFilesAfterEnv: ["<rootDir>/src/setupTests.ts"],
+  setupFilesAfterEnv: ["jest-canvas-mock", "<rootDir>/src/setupTests.ts"],
   coverageThreshold: {
     global: {
       branches: 100,

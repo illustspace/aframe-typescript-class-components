@@ -1,5 +1,4 @@
-import { Scene } from "aframe";
-import { Object3D } from "three";
+import { initializeTestComponent } from "../src/aframe-typescript-class-components";
 
 import { SampleComponent } from "./SampleComponent";
 
@@ -7,29 +6,21 @@ describe("SampleComponent", () => {
   let component: SampleComponent;
 
   beforeEach(() => {
-    component = new SampleComponent();
-
-    // Set the initial data state, since it's not initialized by Aframe in this test.
-    component.data = { enabled: false };
-
-    // Create a fake element, and add an Object3D to it if your component refers to that.
-    component.el = document.createElement("a-entity");
-    component.el.object3D = new Object3D();
-    component.el.sceneEl = document.createElement("a-scene") as Scene;
-
-    // Call the init function to set up the component.
-    component.init();
+    component = initializeTestComponent(SampleComponent, {
+      enabled: false,
+      name: "Alice",
+    });
   });
 
   it("sets initialized on init", () => {
-    expect(component.initialized).toBe(true);
+    expect(component.greeting).toBe("Hello, Alice");
   });
 
   it("moves forward on click", () => {
     expect(component.el.object3D.position.z).toBe(0);
-    component.events.click();
+    component.el.emit("click");
     expect(component.el.object3D.position.z).toBe(-1);
-    component.events.click();
+    component.el.emit("click");
     expect(component.el.object3D.position.z).toBe(-2);
   });
 

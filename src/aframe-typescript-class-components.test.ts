@@ -1,27 +1,37 @@
-import { Entity, Schema } from "aframe";
+import { MultiPropertySchema, SinglePropertySchema } from "aframe";
 import { Object3D, Vector3 } from "three";
-import { SampleComponent } from "../examples/SampleComponent";
+import RegisteredSampleComponent, {
+  SampleComponentData,
+} from "../examples/SampleComponent";
 
 import {
+  attachEvents,
   BaseComponent,
   toComponent,
 } from "./aframe-typescript-class-components";
 
 export class EmptyComponent extends BaseComponent {
+  static schema = {};
+  static bindEvents = false;
   someProperty = true;
 }
 
-type AframeComponent<C> = C & { schema: Schema };
+const RegisteredEmptyComponent = AFRAME.registerComponent(
+  "empty",
+  toComponent(EmptyComponent)
+);
 
 describe("BaseComponent", () => {
   describe("toComponent", () => {
-    let component: AframeComponent<EmptyComponent>;
+    let component: InstanceType<typeof RegisteredEmptyComponent>;
 
     describe("given a Component with no init method", () => {
       beforeEach(() => {
-        component = toComponent(
-          EmptyComponent
-        ) as AframeComponent<EmptyComponent>;
+        component = new RegisteredEmptyComponent(
+          document.createElement("a-entity"),
+          "",
+          ""
+        );
       });
 
       it("runs the constructor during init", () => {
@@ -34,15 +44,16 @@ describe("BaseComponent", () => {
     });
 
     describe("given the SampleComponent", () => {
-      let component: AframeComponent<SampleComponent>;
+      let component: InstanceType<typeof RegisteredSampleComponent>;
 
       beforeEach(() => {
-        component = toComponent(
-          SampleComponent
-        ) as AframeComponent<SampleComponent>;
-
+        component = new RegisteredSampleComponent(
+          document.createElement("a-entity"),
+          "",
+          ""
+        );
         // Set the initial data state, since it's not initialized by Aframe in this test.
-        component.data = { enabled: false };
+        component.data = { enabled: false, name: "Alice" };
 
         // Create a fake element with an Object3D.
         component.el = document.createElement("a-entity");
@@ -50,9 +61,9 @@ describe("BaseComponent", () => {
       });
 
       it("has a schema before init", () => {
-        expect(component.schema).toEqual({
-          enabled: { type: "boolean", default: true },
-        });
+        const schema = component.schema as MultiPropertySchema<SampleComponentData>;
+        const enabled = schema.enabled as SinglePropertySchema<boolean>;
+        expect(enabled.type).toEqual("boolean");
       });
 
       it("runs the constructor during init", () => {
@@ -64,24 +75,22 @@ describe("BaseComponent", () => {
       });
 
       it("runs the init function after construction", () => {
-        expect(component.initialized).toBeFalsy();
+        expect(component.greeting).toBeUndefined();
 
         component.init();
 
-        expect(component.initialized).toBe(true);
+        expect(component.greeting).toBe("Hello, Alice");
       });
 
       describe("given the component is initialized", () => {
         beforeEach(() => {
-          component.init();
-          component.el = {
-            object3D: new Object3D(),
-          } as Entity;
-          component.data = { enabled: true };
-        });
+          component.el = document.createElement("a-entity");
+          component.el.object3D = new Object3D();
+          component.data = { enabled: true, name: "Alice" };
 
-        it("does not add built-in methods (aframe will handle that)", () => {
-          expect(() => component.update({ enabled: true })).toThrow(TypeError);
+          component.init(component.data);
+
+          attachEvents(component);
         });
 
         it("has defined built-in methods", () => {
@@ -94,7 +103,11 @@ describe("BaseComponent", () => {
 
         it("has isolated instance variables", () => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const component2 = toComponent(SampleComponent) as SampleComponent;
+          const component2 = new RegisteredSampleComponent(
+            document.createElement("a-entity"),
+            "",
+            "sample-2"
+          );
 
           component2.data = { enabled: false };
           component2.el = document.createElement("a-entity");
@@ -106,6 +119,12 @@ describe("BaseComponent", () => {
 
           expect(component2.vector.x).toBe(1);
           expect(component.vector.x).toBe(0);
+        });
+
+        it("correctly binds events", () => {
+          expect(component.el.object3D.position.z).toBe(0);
+          component.el.emit("click");
+          expect(component.el.object3D.position.z).toBe(-1);
         });
       });
     });

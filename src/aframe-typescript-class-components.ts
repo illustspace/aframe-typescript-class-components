@@ -1,7 +1,14 @@
 /* eslint-disable @typescript-eslint/ban-types, @typescript-eslint/no-explicit-any */
 
-import { Schema, ComponentDefinition, Entity, Component, System } from "aframe";
-import { Camera } from "three";
+import {
+  Schema,
+  ComponentDefinition,
+  Entity,
+  Component,
+  System,
+  Scene,
+} from "aframe";
+import { Camera, Object3D } from "three";
 
 /** A fake base Aframe component class that defines the methods Aframe will inject into the component at runtime. */
 declare class AbstractBaseComponent<
@@ -10,6 +17,8 @@ declare class AbstractBaseComponent<
 > implements Component<T> {
   static schema: Schema;
   static multiple?: boolean;
+  /** If not false, bind the events object to the component instance. */
+  static bindEvents?: boolean;
 
   attrName?: string;
   data: T;
@@ -22,9 +31,6 @@ declare class AbstractBaseComponent<
   schema: Schema<T>;
   system: S | undefined;
   events?: Record<string, (...args: any[]) => any>;
-
-  /** Register event listeners. */
-  registerEvents(): Record<string, (...args: any[]) => any>;
 
   init(data?: T): void;
   pause(): void;
@@ -43,6 +49,7 @@ declare class AbstractBaseComponent<
 interface StaticComponentProperties<D extends object = any> {
   schema: Schema<D>;
   multiple?: boolean;
+  bindEvents?: boolean;
 }
 
 /** A class that describes the methods Aframe will inject into the component at runtime. */
@@ -104,7 +111,50 @@ export const toComponent = <
     if (onInit) {
       onInit.call(this, data);
     }
+
+    // Bind evens to the component instance.
+    if (ComponentClass.bindEvents !== false) {
+      for (const eventName in this.events) {
+        this.events[eventName] = this.events[eventName].bind(this);
+      }
+    }
   };
+
+  return component;
+};
+
+/** Attaches event listeners like Aframe does when a component is playing. */
+export const attachEvents = (component: AbstractBaseComponent): void => {
+  for (const eventName in component.events) {
+    component.el.addEventListener(eventName, component.events[eventName]);
+  }
+};
+
+/**
+ * Convert a component class to an Aframe component, inject common properties,
+ * and call init. Used for testing.
+ */
+export const initializeTestComponent = <
+  D extends object,
+  S extends System,
+  Class extends GenericBaseComponent<D, S>
+>(
+  ComponentClass: Class,
+  initialData: D
+): ComponentDefinition<InstanceType<Class>> => {
+  const component = toComponent(ComponentClass);
+
+  // Set up a valid element.
+  component.el = document.createElement("a-entity");
+  component.el.object3D = new Object3D();
+  component.el.sceneEl = document.createElement("a-scene") as Scene;
+
+  // Initialize with initial data.
+  component.data = initialData;
+  component.init(initialData);
+
+  // Attach event listeners as if the component was playing.
+  attachEvents(component);
 
   return component;
 };
