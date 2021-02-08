@@ -1,6 +1,6 @@
 {
   "name": "aframe-typescript-class-components",
-  "version": "0.2.1",
+  "version": "0.3.0",
   "description": "A simple tool for writing Aframe components as TypeScript classes.",
   "keywords": [
     "aframe",
@@ -14,7 +14,7 @@
   "private": false,
   "main": "dist/aframe-typescript-class-components.js",
   "module": "dist/aframe-typescript-class-components.es.js",
-  "types": "dist/aframe-typescript-class-components.d.ts",
+  "types": "dist/index.d.ts",
   "scripts": {
     "test": "jest",
     "build": "rollup --config",

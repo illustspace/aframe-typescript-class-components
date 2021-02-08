@@ -80,16 +80,14 @@ And here's the same component written with `aframe-typescript-class-components`:
 
 ```typescript
 import { Vector3 } from "three";
-import {
-  BaseComponent,
-  toComponent,
-} from "../src/aframe-typescript-class-components";
+import { BaseComponent, component } from "aframe-typescript-class-components";
 
 export interface SampleComponentData {
   enabled: boolean;
   name: string;
 }
 
+@component("sample")
 export class SampleComponent extends BaseComponent<SampleComponentData> {
   static schema = {
     enabled: { type: "boolean" as const, default: true },
@@ -131,8 +129,6 @@ export class SampleComponent extends BaseComponent<SampleComponentData> {
     this.vector.setX(this.vector.x + 1);
   }
 }
-
-AFRAME.registerComponent("sample", toComponent(SampleComponent));
 ```
 
 You now have type safety on your instance variables, compile-time checks that you've implemented the Aframe component interface correctly, and arrow-function methods (so no more `this.method.bind(this)` in your `init` method!)
@@ -147,17 +143,47 @@ Sometimes you want to initialize an instance property in the `init` method, like
 
 To solve that, you can use the [Definite Assignment Assertion Modifier](https://www.typescriptlang.org/docs/handbook/release-notes/typescript-2-7.html#definite-assignment-assertions) (like `greeting!: string;`) to tell TypeScript the value will be initialized outside of the constructor. Just make sure not to forget to do that initialization!
 
+### Decorators
+
+This library comes with a few decorators to make defining components a little easier.
+
+#### Component registration
+
+To register your component, you can add the provided `@component('component-name')` decorator. This will convert the component class to a ComponentDescription object, and register it with Aframe.
+
+To use this, you'll have to add `"experimentalDecorators": true` to your `tsconfig.json` `compilerOptions`.
+
+If you don't want to use the decorator, you can manually register a component like so:
+
+```typescript
+import { registerComponent } from "aframe";
+
+import { BaseComponent, toComponent } from "aframe-typescript-class-components";
+
+export class MyComponent extends BaseComponent {}
+
+registerComponent("my-component", toComponent(MyComponent));
+```
+
+#### Method binding
+
+Because calling `this.myMethod = this.myMethod.bind(this)` in the `init` method is annoying, you may be tempted to add arrow functions as class properties. _Don't do that!_ They'll bind to the `this` of the class, not the component instance, and everything will break.
+
+Instead, you can add the `@bind` decorator to any component method. `aframe-typescript-class-components` will then automatically bind the method to the component instance in the `init` lifecycle method.
+
+Alternatively, you can just manually bind the method in the `init` method as usual.
+
+### Systems
+
+If you want to define a system with a class, you can! Just `import { BaseSystem, system } from 'aframe-typescript-class-components';`, and use the base class and decorator in the same way as you do for components.
+
 ### Caveats
 
 Because of the way Aframe handles components, a few TypeScript features won't work the way you'd expect them to. Read on to avoid bugs!
 
-#### Class Property Arrow Functions
-
-Because calling `this.myMethod = this.myMethod.bind(this)` in the `init` method is annoying, you may be tempted to add arrow functions as class properties. Don't do that! They'll bind to the `this` of the class, not the component instance, and everything will break. Instead stick with binding methods manually, or use arrow functions inside of methods - those work fine.
-
 #### Events
 
-The `events` property has the same issue as class property arrow functions, where an arrow function as a key in the events object will bind to the wrong `this`. Instead, `aframe-typescript-class-components` looks for a `static bindEvents: boolean` in the class. If it's `true` or not provided, events will automatically be bound to the component instance.
+The `events` property has the same issue as class property arrow functions, where an arrow function as a key in the events object will bind to the wrong `this`. Instead, `aframe-typescript-class-components` looks for a `static bindEvents: boolean` in the class. Unless you set that to `false`, events will automatically be bound to the component instance.
 
 #### Inheritance
 
