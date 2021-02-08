@@ -1,33 +1,31 @@
-import { MultiPropertySchema, SinglePropertySchema } from "aframe";
-import { Object3D, Vector3 } from "three";
-import RegisteredSampleComponent, {
-  SampleComponentData,
-} from "../examples/SampleComponent";
+import { ComponentDescriptor, components } from "aframe";
+import { Object3D } from "three";
 
-import {
-  attachEvents,
-  BaseComponent,
-  toComponent,
-} from "./aframe-typescript-class-components";
+import "../examples/SampleComponent";
+import { SampleComponent } from "../examples/SampleComponent";
 
+import { BaseComponent } from "./BaseComponent";
+import { component } from "./decorators";
+import { initializeComponentInstance } from "./test-helpers";
+
+@component("empty")
 export class EmptyComponent extends BaseComponent {
   static schema = {};
   static bindEvents = false;
   someProperty = true;
 }
 
-const RegisteredEmptyComponent = AFRAME.registerComponent(
-  "empty",
-  toComponent(EmptyComponent)
-);
-
 describe("BaseComponent", () => {
   describe("toComponent", () => {
-    let component: InstanceType<typeof RegisteredEmptyComponent>;
+    const RegisteredEmptyComponent = components[
+      "empty"
+    ] as ComponentDescriptor<EmptyComponent>;
+
+    let component: InstanceType<typeof RegisteredEmptyComponent.Component>;
 
     describe("given a Component with no init method", () => {
       beforeEach(() => {
-        component = new RegisteredEmptyComponent(
+        component = new RegisteredEmptyComponent.Component(
           document.createElement("a-entity"),
           "",
           ""
@@ -44,53 +42,37 @@ describe("BaseComponent", () => {
     });
 
     describe("given the SampleComponent", () => {
-      let component: InstanceType<typeof RegisteredSampleComponent>;
+      const RegisteredSampleComponent = components[
+        "sample"
+      ] as ComponentDescriptor<SampleComponent>;
+
+      let component: SampleComponent;
 
       beforeEach(() => {
-        component = new RegisteredSampleComponent(
+        component = new RegisteredSampleComponent.Component(
           document.createElement("a-entity"),
           "",
           ""
         );
-        // Set the initial data state, since it's not initialized by Aframe in this test.
-        component.data = { enabled: false, name: "Alice" };
-
-        // Create a fake element with an Object3D.
-        component.el = document.createElement("a-entity");
-        component.el.object3D = new Object3D();
-      });
-
-      it("has a schema before init", () => {
-        const schema = component.schema as MultiPropertySchema<SampleComponentData>;
-        const enabled = schema.enabled as SinglePropertySchema<boolean>;
-        expect(enabled.type).toEqual("boolean");
-      });
-
-      it("runs the constructor during init", () => {
-        expect(component.vector).toBeUndefined();
-
-        component.init();
-
-        expect(component.vector).toEqual(new Vector3(0, 0, 0));
       });
 
       it("runs the init function after construction", () => {
         expect(component.greeting).toBeUndefined();
 
-        component.init();
+        initializeComponentInstance(component, {
+          enabled: true,
+          name: "Alice",
+        });
 
         expect(component.greeting).toBe("Hello, Alice");
       });
 
       describe("given the component is initialized", () => {
         beforeEach(() => {
-          component.el = document.createElement("a-entity");
-          component.el.object3D = new Object3D();
-          component.data = { enabled: true, name: "Alice" };
-
-          component.init(component.data);
-
-          attachEvents(component);
+          initializeComponentInstance(component, {
+            enabled: true,
+            name: "Alice",
+          });
         });
 
         it("has defined built-in methods", () => {
@@ -103,7 +85,7 @@ describe("BaseComponent", () => {
 
         it("has isolated instance variables", () => {
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          const component2 = new RegisteredSampleComponent(
+          const component2 = new RegisteredSampleComponent.Component(
             document.createElement("a-entity"),
             "",
             "sample-2"

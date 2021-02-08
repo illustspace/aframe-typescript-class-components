@@ -1,14 +1,14 @@
 import { Vector3 } from "three";
-import {
-  BaseComponent,
-  toComponent,
-} from "../src/aframe-typescript-class-components";
+
+import { BaseComponent } from "../src/BaseComponent";
+import { component, bind } from "../src/decorators";
 
 export interface SampleComponentData {
   enabled: boolean;
   name: string;
 }
 
+@component("sample")
 export class SampleComponent extends BaseComponent<SampleComponentData> {
   static schema = {
     enabled: { type: "boolean" as const, default: true },
@@ -28,8 +28,6 @@ export class SampleComponent extends BaseComponent<SampleComponentData> {
   };
 
   init(): void {
-    this.onSceneEvent = this.onSceneEvent.bind(this);
-
     this.greeting = `Hello, ${this.data.name}`;
 
     this.el.sceneEl?.addEventListener("some-event", this.onSceneEvent);
@@ -46,9 +44,8 @@ export class SampleComponent extends BaseComponent<SampleComponentData> {
     return this.vector.x;
   }
 
+  @bind
   onSceneEvent(): void {
     this.vector.setX(this.vector.x + 1);
   }
 }
-
-export default AFRAME.registerComponent("sample", toComponent(SampleComponent));

@@ -1,4 +1,4 @@
-import { initializeTestComponent } from "../src/aframe-typescript-class-components";
+import { initializeTestComponent } from "../src/test-helpers";
 
 import { SampleComponent } from "./SampleComponent";
 
@@ -45,11 +45,9 @@ describe("SampleComponent", () => {
     expect(component.el.object3D.rotation.z).toBeCloseTo(Math.PI / 2, 2);
   });
 
-  describe("given a sceneEl", () => {
-    it("updates the vector on events", () => {
-      expect(component.getVectorX()).toBe(0);
-      component.el.sceneEl?.dispatchEvent(new Event("some-event"));
-      expect(component.getVectorX()).toBe(1);
-    });
+  it("updates the vector on events", () => {
+    expect(component.getVectorX()).toBe(0);
+    component.el.sceneEl?.dispatchEvent(new Event("some-event"));
+    expect(component.getVectorX()).toBe(1);
   });
 });
