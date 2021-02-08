@@ -18,9 +18,18 @@ export default {
       sourcemap: true,
     },
   ],
+  external: ["aframe", "three"],
   plugins: [
     typescript({
-      exclude: ["**/*.test.ts", "examples", "src/setupTests.ts"],
+      include: ["src/**/*.ts"],
+      exclude: [
+        "*.d.ts",
+        "**/*.d.ts",
+        "**/*.test.ts",
+        "src/setupTests.ts",
+        "examples",
+        "src/setupTests.ts",
+      ],
       useTsconfigDeclarationDir: false,
       clean: true,
     }),

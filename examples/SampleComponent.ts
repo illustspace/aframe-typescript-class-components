@@ -1,7 +1,8 @@
 import { Vector3 } from "three";
 
-import { BaseComponent } from "../src/BaseComponent";
-import { component, bind } from "../src/decorators";
+import { BaseComponent } from "../src/component/BaseComponent";
+import { component } from "../src/component/component.decorator";
+import { bind } from "../src/shared/bind.decorator";
 
 export interface SampleComponentData {
   enabled: boolean;

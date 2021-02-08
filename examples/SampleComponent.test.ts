@@ -1,4 +1,4 @@
-import { initializeTestComponent } from "../src/test-helpers";
+import { initializeTestComponent } from "../src/shared/test-helpers";
 
 import { SampleComponent } from "./SampleComponent";
 
@@ -14,6 +14,13 @@ describe("SampleComponent", () => {
 
   it("sets initialized on init", () => {
     expect(component.greeting).toBe("Hello, Alice");
+  });
+
+  it("works without a sceneEl", () => {
+    component.el.sceneEl = undefined;
+    expect(() => {
+      component.init();
+    }).not.toThrow();
   });
 
   it("moves forward on click", () => {

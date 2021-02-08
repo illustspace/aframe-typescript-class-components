@@ -1,12 +1,11 @@
 import { ComponentDescriptor, components } from "aframe";
-import { Object3D } from "three";
 
-import "../examples/SampleComponent";
-import { SampleComponent } from "../examples/SampleComponent";
+import "../../examples/SampleComponent";
+import { SampleComponent } from "../../examples/SampleComponent";
 
 import { BaseComponent } from "./BaseComponent";
-import { component } from "./decorators";
-import { initializeComponentInstance } from "./test-helpers";
+import { component } from "./component.decorator";
+import { initializeComponentInstance } from "../shared/test-helpers";
 
 @component("empty")
 export class EmptyComponent extends BaseComponent {
@@ -64,6 +63,8 @@ describe("BaseComponent", () => {
           name: "Alice",
         });
 
+        component.init();
+
         expect(component.greeting).toBe("Hello, Alice");
       });
 
@@ -84,18 +85,13 @@ describe("BaseComponent", () => {
         });
 
         it("has isolated instance variables", () => {
-          // eslint-disable-next-line @typescript-eslint/no-explicit-any
           const component2 = new RegisteredSampleComponent.Component(
             document.createElement("a-entity"),
             "",
             "sample-2"
           );
 
-          component2.data = { enabled: false };
-          component2.el = document.createElement("a-entity");
-          component2.el.object3D = new Object3D();
-
-          component2.init();
+          initializeComponentInstance(component2, { enabled: false });
 
           component2.vector.setX(1);
 
