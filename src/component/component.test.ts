@@ -16,9 +16,7 @@ export class EmptyComponent extends BaseComponent {
 
 describe("BaseComponent", () => {
   describe("toComponent", () => {
-    const RegisteredEmptyComponent = components[
-      "empty"
-    ] as ComponentDescriptor<EmptyComponent>;
+    const RegisteredEmptyComponent = components.empty as ComponentDescriptor<EmptyComponent>;
 
     let component: InstanceType<typeof RegisteredEmptyComponent.Component>;
 
@@ -41,9 +39,7 @@ describe("BaseComponent", () => {
     });
 
     describe("given the SampleComponent", () => {
-      const RegisteredSampleComponent = components[
-        "sample"
-      ] as ComponentDescriptor<SampleComponent>;
+      const RegisteredSampleComponent = components.sample as ComponentDescriptor<SampleComponent>;
 
       let component: SampleComponent;
 

@@ -3,10 +3,7 @@ import { ComponentDefinition, System } from "aframe";
 import { BindableMethod } from "shared/bind.decorator";
 import { DataObject } from "shared/types";
 
-import {
-  AbstractBaseComponent,
-  GenericBaseComponent,
-} from "./BaseComponent";
+import { AbstractBaseComponent, GenericBaseComponent } from "./BaseComponent";
 
 /** Convert a ComponentClass into a ComponentDefinition for Aframe. */
 export function toComponent<

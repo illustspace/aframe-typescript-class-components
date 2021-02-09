@@ -2,7 +2,8 @@ import { BaseSystem } from "../system/BaseSystem";
 
 import { bind, BindableMethod } from "./bind.decorator";
 
-const anyBind = bind as any;
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const anyBind = bind as (...args: any[]) => void;
 
 describe("bind", () => {
   it("throws on when not decorating a function", () => {

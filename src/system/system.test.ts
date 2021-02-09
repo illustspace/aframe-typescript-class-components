@@ -15,9 +15,7 @@ export class EmptySystem extends BaseSystem {
 
 describe("BaseSystem", () => {
   describe("toSystem", () => {
-    const RegisteredEmptySystem = systems[
-      "empty"
-    ] as SystemConstructor<EmptySystem>;
+    const RegisteredEmptySystem = systems.empty as SystemConstructor<EmptySystem>;
 
     let system: InstanceType<typeof RegisteredEmptySystem>;
 
@@ -34,9 +32,7 @@ describe("BaseSystem", () => {
     });
 
     describe("given the SampleSystem", () => {
-      const RegisteredSampleSystem = systems[
-        "sample"
-      ] as SystemConstructor<SampleSystem>;
+      const RegisteredSampleSystem = systems.sample as SystemConstructor<SampleSystem>;
 
       let system: SampleSystem;
 
