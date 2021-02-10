@@ -3,7 +3,7 @@ import typescript from "rollup-plugin-typescript2";
 import pkg from "./package.json";
 
 export default {
-  input: "src/aframe-typescript-class-components.ts",
+  input: "src/index.ts",
   output: [
     {
       file: pkg.main,
@@ -18,9 +18,18 @@ export default {
       sourcemap: true,
     },
   ],
+  external: ["aframe", "three"],
   plugins: [
     typescript({
-      exclude: ["**/*.test.ts", "examples", "src/setupTests.ts"],
+      include: ["src/**/*.ts"],
+      exclude: [
+        "*.d.ts",
+        "**/*.d.ts",
+        "**/*.test.ts",
+        "src/setupTests.ts",
+        "examples",
+        "src/setupTests.ts",
+      ],
       useTsconfigDeclarationDir: false,
       clean: true,
     }),

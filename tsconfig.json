@@ -16,7 +16,8 @@
     "strict": true,
     "target": "es5",
     "types": ["node", "jest"],
-    "declaration": true
+    "declaration": true,
+    "experimentalDecorators": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "**/*.test.ts", "examples"]
