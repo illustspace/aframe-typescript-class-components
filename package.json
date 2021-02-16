@@ -1,6 +1,6 @@
 {
   "name": "aframe-typescript-class-components",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A simple tool for writing Aframe components as TypeScript classes.",
   "keywords": [
     "aframe",

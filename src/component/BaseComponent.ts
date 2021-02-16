@@ -47,7 +47,9 @@ interface StaticComponentProperties<D extends DataObject = DataObject> {
 }
 
 /** A class that describes the methods Aframe will inject into the component at runtime. */
-export const BaseComponent = class {} as typeof AbstractBaseComponent;
+export const BaseComponent = class {
+  static schema = {};
+} as typeof AbstractBaseComponent;
 
 /** Describes a component class with generic data and system. */
 export interface GenericBaseComponent<

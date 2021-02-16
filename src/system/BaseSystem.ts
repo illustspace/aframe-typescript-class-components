@@ -23,7 +23,9 @@ interface StaticSystemProperties<D extends DataObject = DataObject> {
 }
 
 /** A class that describes the methods Aframe will inject into the system at runtime. */
-export const BaseSystem = class {} as typeof AbstractBaseSystem;
+export const BaseSystem = class {
+  static schema = {};
+} as typeof AbstractBaseSystem;
 
 /** Describes a system class with generic data and system. */
 export interface GenericBaseSystem<D extends DataObject = DataObject>

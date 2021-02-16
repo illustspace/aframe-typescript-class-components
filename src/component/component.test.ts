@@ -9,7 +9,6 @@ import { initializeComponentInstance } from "../shared/test-helpers";
 
 @component("empty")
 export class EmptyComponent extends BaseComponent {
-  static schema = {};
   static bindEvents = false;
   someProperty = true;
 }

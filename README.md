@@ -147,17 +147,51 @@ To solve that, you can use the [Definite Assignment Assertion Modifier](https://
 
 This library comes with a few decorators to make defining components a little easier.
 
+To enable decorators in a TypeScript project, you'll have to add `"experimentalDecorators": true` to your `tsconfig.json`.
+
+```json
+{
+  "compilerOptions": {
+    ...
+    "experimentalDecorators": true
+  },
+}
+```
+
+If you're using the babel compiler, you'll also want to add the `@babel/plugin-proposal-decorators` plugin to your babel config file, with `legacy: true`.
+
+```bash
+yarn add @babel/plugin-proposal-decorators --dev
+```
+
+```javascript
+module.exports = {
+  presets: ["@babel/preset-env", "@babel/preset-typescript"],
+  plugins: [
+    ["@babel/plugin-transform-runtime", { corejs: 3 }],
+    "@babel/plugin-proposal-optional-chaining",
+    // Decorators
+    ["@babel/plugin-proposal-decorators", { legacy: true }],
+    ["@babel/plugin-proposal-class-properties", { loose: true }],
+  ],
+};
+```
+
 #### Component registration
 
 To register your component, you can add the provided `@component('component-name')` decorator. This will convert the component class to a ComponentDescription object, and register it with Aframe.
 
-To use this, you'll have to add `"experimentalDecorators": true` to your `tsconfig.json` `compilerOptions`.
+```typescript
+import { BaseComponent, component } from "aframe-typescript-class-components";
 
-If you don't want to use the decorator, you can manually register a component like so:
+@component("my-component")
+export class MyComponent extends BaseComponent {}
+```
+
+If you don't want to use decorators, you can still manually register a component like so:
 
 ```typescript
 import { registerComponent } from "aframe";
-
 import { BaseComponent, toComponent } from "aframe-typescript-class-components";
 
 export class MyComponent extends BaseComponent {}
