@@ -1,11 +1,12 @@
 import { Entity, Schema, System } from "aframe";
+import { AnyData, UnknownData } from "component/BaseComponent";
 
 import { DataObject } from "shared/types";
 
 /** A fake base Aframe system class that defines the methods Aframe will inject into the system at runtime. */
-export declare class AbstractBaseSystem<D extends DataObject = DataObject>
+export declare class AbstractBaseSystem<D extends DataObject = UnknownData>
   implements System<D> {
-  static schema: Schema;
+  static schema: Schema<AnyData>;
 
   data: D;
   schema: Schema<D>;
@@ -29,6 +30,6 @@ export const BaseSystem = class {
 
 /** Describes a system class with generic data and system. */
 export interface GenericBaseSystem<D extends DataObject = DataObject>
-  extends StaticSystemProperties {
+  extends StaticSystemProperties<D> {
   new (): AbstractBaseSystem<D>;
 }

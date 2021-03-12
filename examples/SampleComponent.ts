@@ -1,8 +1,10 @@
+import { Schema } from "aframe";
 import { Vector3 } from "three";
 
 import { BaseComponent } from "../src/component/BaseComponent";
 import { component } from "../src/component/component.decorator";
 import { bind } from "../src/shared/bind.decorator";
+import { SampleSystem } from "./SampleSystem";
 
 export interface SampleComponentData {
   enabled: boolean;
@@ -10,10 +12,13 @@ export interface SampleComponentData {
 }
 
 @component("sample")
-export class SampleComponent extends BaseComponent<SampleComponentData> {
-  static schema = {
-    enabled: { type: "boolean" as const, default: true },
-    name: { type: "string" as const, default: "" },
+export class SampleComponent extends BaseComponent<
+  SampleComponentData,
+  SampleSystem
+> {
+  static schema: Schema<SampleComponentData> = {
+    enabled: { type: "boolean", default: true },
+    name: { type: "string", default: "" },
   };
   static multiple = true;
 

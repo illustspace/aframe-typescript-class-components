@@ -17,6 +17,7 @@ export function toComponent<
   const component = {
     schema: ComponentClass.schema,
     multiple: ComponentClass.multiple,
+    dependencies: ComponentClass.dependencies,
   } as ComponentDefinition<InstanceType<Class>>;
 
   /** Methods to copy over to the object. */
@@ -71,7 +72,9 @@ export function toComponent<
 }
 
 /** Attaches event listeners like Aframe does when a component is playing. */
-export function attachEvents(component: AbstractBaseComponent): void {
+export function attachEvents<D extends DataObject, S extends System>(
+  component: AbstractBaseComponent<D, S>
+): void {
   for (const eventName in component.events) {
     component.el.addEventListener(eventName, component.events[eventName]);
   }
