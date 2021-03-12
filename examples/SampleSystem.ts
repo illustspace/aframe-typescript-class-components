@@ -3,6 +3,7 @@ import { Vector3 } from "three";
 import { BaseSystem } from "../src/system/BaseSystem";
 import { system } from "../src/system/system.decorator";
 import { bind } from "../src/shared/bind.decorator";
+import { Schema } from "aframe";
 
 export interface SampleSystemData {
   enabled: boolean;
@@ -11,8 +12,9 @@ export interface SampleSystemData {
 
 @system("sample")
 export class SampleSystem extends BaseSystem<SampleSystemData> {
-  static schema = {
-    enabled: { type: "boolean" as const, default: true },
+  static schema: Schema<SampleSystemData> = {
+    name: { type: "string" },
+    enabled: { type: "boolean", default: true },
   };
 
   vector = new Vector3(0, 0, 0);

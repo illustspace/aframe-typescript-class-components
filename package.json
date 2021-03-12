@@ -1,6 +1,6 @@
 {
   "name": "aframe-typescript-class-components",
-  "version": "0.3.1",
+  "version": "0.3.2",
   "description": "A simple tool for writing Aframe components as TypeScript classes.",
   "keywords": [
     "aframe",
@@ -44,7 +44,7 @@
     "typescript": "^4.1.3"
   },
   "peerDependencies": {
-    "@types/aframe": "^1.0.3",
-    "@types/three": "^0.103.2"
+    "@types/aframe": ">=1.0.3",
+    "@types/three": ">=0.103.2"
   }
 }

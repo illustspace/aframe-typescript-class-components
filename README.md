@@ -43,6 +43,7 @@ AFRAME.registerComponent("sample", {
     name: { type: "string", default: "" },
   },
   multiple: true,
+  dependencies: ["other-component"],
 
   init() {
     this.onSceneEvent = this.onSceneEvent.bind(this);
@@ -82,18 +83,24 @@ And here's the same component written with `aframe-typescript-class-components`:
 import { Vector3 } from "three";
 import { BaseComponent, component } from "aframe-typescript-class-components";
 
+import { SampleSystem } from "./SampleSystem";
+
 export interface SampleComponentData {
   enabled: boolean;
   name: string;
 }
 
 @component("sample")
-export class SampleComponent extends BaseComponent<SampleComponentData> {
-  static schema = {
-    enabled: { type: "boolean" as const, default: true },
-    name: { type: "string" as const, default: "" },
+export class SampleComponent extends BaseComponent<
+  SampleComponentData,
+  SampleSystem
+> {
+  static schema: Schema<SampleComponentData> = {
+    enabled: { type: "boolean", default: true },
+    name: { type: "string", default: "" },
   };
   static multiple = true;
+  static dependencies = ["other-component"];
 
   greeting!: string;
   vector = new Vector3(0, 0, 0);
@@ -135,7 +142,9 @@ You now have type safety on your instance variables, compile-time checks that yo
 
 Your class can initialize properties (like `vector` in the sample) in the top of the class, as usual in TypeScript. At runtime, these will actually be initialized in the `init()` lifecycle method, and will be independent for every instance of the component, just like in an Aframe component.
 
-Note that you should define an interface matching your `schema` (which enforces the type of `this.data`), and pass it as a type parameter to `BaseComponent`. If you do that, you'll get type hints on `this.data`, and compiler will check your `schema` declaration matches up with the interface. One weird thing is you'll need to add `as const` to the `type` field, or TypeScript will have trouble inferring the schema property type (see the sample code).
+Note that you should define an interface matching your `schema` (which sets the type of `this.data`), and pass it as a type parameter to `BaseComponent`. If you do that, you'll get type hints on `this.data`
+
+If you want to check that your schema matches your data interface, you'll also want to add the `Schema<YourData>` type to the `static schema` declaration. TypeScript won't infer generic class types onto static properties, so you'll have to do that manually.
 
 ### Initializing properties in `init`
 
@@ -145,7 +154,7 @@ To solve that, you can use the [Definite Assignment Assertion Modifier](https://
 
 ### Decorators
 
-This library comes with a few decorators to make defining components a little easier.
+This library comes with a few decorators to make defining components and systems a little easier.
 
 To enable decorators in a TypeScript project, you'll have to add `"experimentalDecorators": true` to your `tsconfig.json`.
 
@@ -179,7 +188,7 @@ module.exports = {
 
 #### Component registration
 
-To register your component, you can add the provided `@component('component-name')` decorator. This will convert the component class to a ComponentDescription object, and register it with Aframe.
+To register your component, you can add the provided `@component('component-name')` decorator. This will convert the component class to an Aframe `ComponentDescription` object, and register it with Aframe.
 
 ```typescript
 import { BaseComponent, component } from "aframe-typescript-class-components";

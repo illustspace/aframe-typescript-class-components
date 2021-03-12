@@ -3,13 +3,19 @@ import { Camera } from "three";
 
 import { DataObject } from "shared/types";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export type AnyData = Record<string, any>;
+export type UnknownData = Record<string, unknown>;
+
 /** A fake base Aframe component class that defines the methods Aframe will inject into the component at runtime. */
 export declare class AbstractBaseComponent<
-  D extends DataObject = DataObject,
+  D extends DataObject = UnknownData,
   S extends System = System
 > implements Component<D, S> {
-  static schema: Schema;
+  static schema: Schema<AnyData>;
   static multiple?: boolean;
+  static dependencies?: string[];
+
   /** If not false, bind the events object to the component instance. */
   static bindEvents?: boolean;
 
@@ -40,9 +46,10 @@ export declare class AbstractBaseComponent<
 }
 
 /** The properties that must be set before component initialization. */
-interface StaticComponentProperties<D extends DataObject = DataObject> {
+interface StaticComponentProperties<D extends DataObject = UnknownData> {
   schema: Schema<D>;
   multiple?: boolean;
+  dependencies?: string[];
   bindEvents?: boolean;
 }
 
@@ -53,8 +60,8 @@ export const BaseComponent = class {
 
 /** Describes a component class with generic data and system. */
 export interface GenericBaseComponent<
-  D extends DataObject = DataObject,
+  D extends DataObject = UnknownData,
   S extends System = System
-> extends StaticComponentProperties {
+> extends StaticComponentProperties<D> {
   new (): AbstractBaseComponent<D, S>;
 }
