@@ -1,6 +1,6 @@
 import { registerSystem } from "aframe";
 
-import { DataObject } from "shared/types";
+import { DataObject } from "../shared/types";
 
 import { GenericBaseSystem } from "./BaseSystem";
 import { toSystem } from "./toSystem";

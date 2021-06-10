@@ -1,7 +1,7 @@
 import { registerComponent, System } from "aframe";
 
-import { DataObject } from "shared/types";
-import { toComponent } from "component/toComponent";
+import { DataObject } from "../shared/types";
+import { toComponent } from "../component/toComponent";
 
 import { GenericBaseComponent } from "./BaseComponent";
 

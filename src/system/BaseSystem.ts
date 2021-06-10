@@ -1,7 +1,7 @@
 import { Entity, Schema, System } from "aframe";
-import { AnyData, UnknownData } from "component/BaseComponent";
+import { AnyData, UnknownData } from "../component/BaseComponent";
 
-import { DataObject } from "shared/types";
+import { DataObject } from "../shared/types";
 
 /** A fake base Aframe system class that defines the methods Aframe will inject into the system at runtime. */
 export declare class AbstractBaseSystem<D extends DataObject = UnknownData>

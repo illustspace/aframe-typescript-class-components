@@ -1,7 +1,7 @@
 import { ComponentDefinition, System } from "aframe";
 
-import { BindableMethod } from "shared/bind.decorator";
-import { DataObject } from "shared/types";
+import { BindableMethod } from "../shared/bind.decorator";
+import { DataObject } from "../shared/types";
 
 import { AbstractBaseComponent, GenericBaseComponent } from "./BaseComponent";
 

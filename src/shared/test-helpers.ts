@@ -7,12 +7,12 @@ import {
 } from "aframe";
 import { Object3D } from "three";
 
-import { GenericBaseComponent } from "component/BaseComponent";
-import { attachEvents, toComponent } from "component/toComponent";
+import { GenericBaseComponent } from "../component/BaseComponent";
+import { attachEvents, toComponent } from "../component/toComponent";
 
 import { DataObject } from "./types";
-import { toSystem } from "system/toSystem";
-import { GenericBaseSystem } from "system/BaseSystem";
+import { toSystem } from "../system/toSystem";
+import { GenericBaseSystem } from "../system/BaseSystem";
 
 /**
  * Given a component instance, inject common properties, attach event listeners

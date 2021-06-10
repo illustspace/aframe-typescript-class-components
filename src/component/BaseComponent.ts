@@ -1,7 +1,7 @@
 import { Schema, Entity, Component, System } from "aframe";
 import { Camera } from "three";
 
-import { DataObject } from "shared/types";
+import { DataObject } from "../shared/types";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type AnyData = Record<string, any>;
